@@ -81,7 +81,7 @@ while (cv2.waitKey(10) != ord('q')):
     # M = cv2.getRotationMatrix2D((cols / 2, rows / 2), -smoothed_angle, 1)
     # dst = cv2.warpAffine(steer, M, (cols, rows))
     # cv2.imshow("steering wheel", dst)
-    # i = i + 1
+    i = i + 1
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
