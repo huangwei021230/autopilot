@@ -39,7 +39,7 @@ def data_loading(delta):
     return features, labels
 
 
-delta = 0.2
+delta = 0.01
 features, labels = data_loading(delta)
 
 features = np.array(features).astype('float32')

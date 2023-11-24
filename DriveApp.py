@@ -26,7 +26,7 @@ def keras_process_image(img):
     return img
 
 
-out = open("./data/Sunny1.csv", 'a', newline='')
+out = open("./data/Night2.csv", 'a', newline='')
 csv_writer = csv.writer(out)
 steer = cv2.imread('steering_wheel_image.jpg', 0)
 rows, cols = steer.shape
@@ -49,7 +49,7 @@ smoothed_angle = 0
 #         break
 i = 1
 while (cv2.waitKey(10) != ord('q')):
-    frame = imageio.imread("./data/sunny/sunny_" + str(i) + ".jpg", pilmode="RGB")
+    frame = imageio.imread("../../dataset/night/night_" + str(i) + ".jpg", pilmode="RGB")
     gray = cv2.resize((cv2.cvtColor(frame, cv2.COLOR_RGB2HSV))[:, :, 1], (40, 40))
     steering_angle = keras_predict(model, gray)
 
@@ -62,25 +62,26 @@ while (cv2.waitKey(10) != ord('q')):
     vec = activation_model.predict(image)
     vec1 = activation_model_1.predict(image)
     vec2 = activation_model_2.predict(image)
+    np.save('./data/vec2/vec2_data_'+str(i)+'.npy', vec2)
 
-    outputDict = []
-    outputDict.append("sunny_" + str(i))
-    outputDict.append(str(steering_angle))
-
-    outputDict.append(image)
-    outputDict.append(vec)
-    outputDict.append(vec1)
-    outputDict.append(vec2)
+    outputDict = [
+        "night_" + str(i),
+        str(steering_angle),
+        np.array2string(vec, separator=', ', threshold=np.inf),
+        np.array2string(vec1, separator=', ', threshold=np.inf),
+        './data/vec2/vec2_data_' + str(i) + '.npy',
+        np.array2string(image, separator=', ', threshold=np.inf)
+    ]
 
     csv_writer.writerow(outputDict)
 
-    # cv2.imshow('frame', cv2.resize(frame, (500, 300), interpolation=cv2.INTER_AREA))
-    # smoothed_angle += 0.2 * pow(abs((steering_angle - smoothed_angle)), 2.0 / 3.0) * (
-    #         steering_angle - smoothed_angle) / abs(
-    #     steering_angle - smoothed_angle)
-    # M = cv2.getRotationMatrix2D((cols / 2, rows / 2), -smoothed_angle, 1)
-    # dst = cv2.warpAffine(steer, M, (cols, rows))
-    # cv2.imshow("steering wheel", dst)
+    cv2.imshow('frame', cv2.resize(frame, (500, 300), interpolation=cv2.INTER_AREA))
+    smoothed_angle += 0.2 * pow(abs((steering_angle - smoothed_angle)), 2.0 / 3.0) * (
+            steering_angle - smoothed_angle) / abs(
+        steering_angle - smoothed_angle)
+    M = cv2.getRotationMatrix2D((cols / 2, rows / 2), -smoothed_angle, 1)
+    dst = cv2.warpAffine(steer, M, (cols, rows))
+    cv2.imshow("steering wheel", dst)
     i = i + 1
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
