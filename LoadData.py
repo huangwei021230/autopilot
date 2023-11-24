@@ -36,6 +36,7 @@ def data_loading(delta):
                 labels.append(float(logs[i][3]) + delta)
             else:
                 labels.append(float(logs[i][3]) - delta)
+
     return features, labels
 
 
